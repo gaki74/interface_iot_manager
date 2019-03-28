@@ -1,0 +1,76 @@
+<html>
+  <head>
+    <title>グラフ</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.min.js"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      let datasets = {};
+      let ajaxs = [];
+      const chartOptions = {
+        scales: {
+          xAxes: [{ type: 'time', time: { unit: 'day' } }],
+          yAxes: [
+            {
+              id: 'a1',
+              position: 'left',
+              scaleLabel: { display: true, labelString: '温度 /℃'}
+            },
+            {
+              id: 'a2',
+              position: 'right',
+              scaleLabel: { display: true, labelString: '湿度 /％'}
+            }
+          ]
+        }
+      };
+      const ajax = (sensorId) => $.ajax({
+        type: 'GET',
+        url: `/sensors/${sensorId}/data`,
+        dataType: 'json'
+      });
+
+      for(i=1; i<=2; i++) {
+        ajaxs.push(ajax(i).done((data, status) => {
+          if (status === "success" && data.length > 0) {
+            datasets[data[0]['sensorId']] = data.map((datum) => ({
+              x: new Date(datum.date),
+              y: datum.value
+            }));
+          }
+        }));
+      }
+
+      $.when.apply(null, ajaxs).done(() => {
+        new Chart($('#chart'), {
+          type: 'line',
+          data: { datasets: [
+            {
+              data: datasets[1],
+              label: '温度',
+              yAxisID: 'a1',
+              borderColor : "rgba(254,97,132,0.8)",
+              backgroundColor : "rgba(254,97,132,0.5)",
+              pointRadius: 1
+            },
+            {
+              data: datasets[2],
+              label: '湿度',
+              yAxisID: 'a2',
+              borderColor : "rgba(54,164,235,0.8)",
+              backgroundColor : "rgba(54,164,235,0.5)",
+              pointRadius: 1
+            }
+          ] },
+          options: chartOptions
+        });
+        $('#loading').remove();
+      });
+    </script>
+    <div>
+      <p id="loading">読み込み中です。</p>
+      <canvas id="chart"/>
+    </div>
+  </body>
+</html>
