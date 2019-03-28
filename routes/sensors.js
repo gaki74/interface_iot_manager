@@ -1,6 +1,7 @@
 var express = require('express');
 var mongodb = require('mongodb');
 var decrypt = require('../utils/decrypt');
+var startOfThisWeek = require('../utils/startOfThisWeek');
 
 var router = express.Router();
 
@@ -75,6 +76,36 @@ router.get('/:id/data', function(request, response) {
     });
   } else {
     response.status(404).send('no sensor found');
+  }
+});
+
+/* GET this week data */
+router.get('/:id/data_this_week', function(request, response) {
+  var id = Number(request.params['id']);
+  var sensor = sensors[id];
+
+  if (sensor) {
+    mongoClient.connect(uri, options, (error, client) => {
+      if (error) {
+        resquest.send(error);
+      } else {
+        var data = client
+                     .db(dbName)
+                     .collection('data')
+                     .find({ sensorId: id , date: { $gte: startOfThisWeek() } })
+                     .sort({ date: 1 });
+        data.toArray((error, documents) => {
+          if (error) {
+            response.send(error);
+          } else {
+            response.send(documents);
+          }
+          client.close();
+        });
+      }
+    });
+  } else {
+    response.send('no sensor found');
   }
 });
 
