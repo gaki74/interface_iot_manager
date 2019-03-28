@@ -27,7 +27,7 @@
       };
       const ajax = (sensorId) => $.ajax({
         type: 'GET',
-        url: `/sensors/${sensorId}/data`,
+        url: `/sensors/${sensorId}/data_this_week`,
         dataType: 'json'
       });
 
