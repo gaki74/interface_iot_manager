@@ -27,20 +27,24 @@ router.post('/:id/datum', function(request, response) {
 
       mongoClient.connect(uri, options, (error, client) => {
         if (error) {
-          response.send(error);
+          response.status(500).send(error);
         } else {
           var collection = client.db(dbName).collection('data');
           collection.insertOne(datum, (error) => {
-            response.send(error || 'ok');
-            client.close();
+            if (error) {
+              response.status(500).send(error)
+            } else {
+              response.status(201).send(datum);
+            }
           });
+          client.close();
         }
       });
     } else {
-      response.send('decrypt error');
+      response.status(400).send('undecryptable request');
     }
   } else {
-    response.send('no sensor found');
+    response.status(404).send('no sensor found');
   }
 });
 
@@ -52,12 +56,16 @@ router.get('/:id/data', function(request, response) {
   if (sensor) {
     mongoClient.connect(uri, options, (error, client) => {
       if (error) {
-        resquest.send(error);
+        resquest.status(500).send(error);
       } else {
-        var data = client.db(dbName).collection('data').find({ sensorId: id })
+        var data = client
+                     .db(dbName)
+                     .collection('data')
+                     .find({ sensorId: id })
+                     .sort({ date: 1 });
         data.toArray((error, documents) => {
           if (error) {
-            response.send(error);
+            response.status(500).send(error);
           } else {
             response.send(documents);
           }
@@ -66,7 +74,7 @@ router.get('/:id/data', function(request, response) {
       }
     });
   } else {
-    response.send('no sensor found');
+    response.status(404).send('no sensor found');
   }
 });
 
