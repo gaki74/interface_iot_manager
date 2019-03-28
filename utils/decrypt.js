@@ -11,11 +11,15 @@ var decrypt = (objRequestBody, strKey) => {
 
     var plainText = decipher.update(cipherText, 'base64', 'utf8');
 
-    plainText += decipher.final('utf8');
+    try {
+      plainText += decipher.final('utf8');
 
-    var arrDatum = plainText.split(',');
-    if (arrDatum.length === 2) {
-      var [strValue, strDigest] = arrDatum;
+      arrDatum = plainText.split(',');
+      if (arrDatum.length === 2) {
+        var [strValue, strDigest] = arrDatum;
+      }
+    } catch {
+      // do nothing
     }
   }
 
