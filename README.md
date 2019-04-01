@@ -16,5 +16,5 @@ This software is released under the MIT License, see LICENSE.
 |[feature/chartjs](https://github.com/gaki74/interface_iot_manager/tree/feature/chartjs)|グラフの表示機能|`https://(中略).com/chart.html`へアクセスしてください。|
 |[feature/hardening](https://github.com/gaki74/interface_iot_manager/tree/feature/hardening)|余分な機能の削除||
 |[feature/momentjs](https://github.com/gaki74/interface_iot_manager/tree/feature/momentjs)|今週のデータの表示機能|`https://(中略).com/sensors/[センサーのID]/data_this_week`へアクセスしてください。|
-|[feature/mqtt](https://github.com/gaki74/interface_iot_manager/tree/feature/mqtt)|データ受信時にMQTTブローカーと通信する機能|MQTTブローカーは別途準備してください。|
+|[feature/mqtt](https://github.com/gaki74/interface_iot_manager/tree/feature/mqtt)|データ受信時にMQTTブローカーと通信する機能|MQTTブローカーはHeokuのAddon(CloudMQTT)を使用します。|
 |[develop](https://github.com/gaki74/interface_iot_manager/tree/develop)|上記機能をすべて統合||
