@@ -1,5 +1,6 @@
 var express = require('express');
 var mongodb = require('mongodb');
+var mqtt = require('mqtt');
 var decrypt = require('../utils/decrypt');
 var startOfThisWeek = require('../utils/startOfThisWeek');
 
